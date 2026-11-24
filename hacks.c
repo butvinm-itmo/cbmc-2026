@@ -24,7 +24,7 @@ int abs(int x) {
 
 int abs_optimized(int x) {
   //TODO: нельзя использовать: ?: (тернарный оператор условия), for, if
-  return 0;
+  return (x >= 0)*x + (x < 0)*-x;
 }
 
 void check2(int c) {
