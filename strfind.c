@@ -13,10 +13,21 @@ unsigned search(char *s, unsigned len) {
             seen=2;
     else if (seen==2 && ch=='x')
             return i-2;  // found
+    else if (seen==2 && ch=='+')
+            seen=2;
     else
             seen=0;    // reset
   }
   return len;                // not found
+}
+
+unsigned search_slow(char *s, unsigned len) {
+    for (unsigned i=0; i<len-2; i++) {
+        if (s[i] == '+' && s[i+1] == '+' && s[i+2] == 'x') {
+            return i;
+        }
+    }
+    return len;
 }
 
 int main() {
@@ -24,5 +35,10 @@ int main() {
   //TODO: здесь нужно написать свои ограничения, которые гарантируют следующее:
   //TODO: функция `search(s, len)` возвращает индекс в `s` начала подстроки `++x`, если эта подстрока есть в строке `s`, иначе возвращает `len`
   //TODO: подсказка: напишите вспомогательную неоптимальную функцию для этой же задачи
-  return 0;
+  assert(search(s, LEN) == search_slow(s, LEN));
+
+  // Bug 1:
+  // s={ '+', '+', '+', 'x', '(', '+', '+', 'x', '(', ';' } 
+  // return_value_search=5u
+  // return_value_search_slow=1u
 }
