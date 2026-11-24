@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <limits.h>
@@ -10,7 +11,7 @@ bool have_different_signs(int x, int y) {
 
 bool have_different_signs_optimized(int x, int y) {
   //TODO: нельзя использовать: &&, ||, ?: (тернарный оператор условия), for, if
-  return true;
+  return (x < 0) ^ (y < 0);
 }
 
 void check1(int x, int y) {
