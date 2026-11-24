@@ -231,6 +231,9 @@ bool is_equal(char *buf1, char *buf2, size_t n) {
     return true;
 }
 
+#define HASH 17625494597720145299ULL
+
+#ifdef __CPROVER__
 void check_unique() {
   char buf1[STRLEN+1];
   buf1[STRLEN] = 0;
@@ -245,7 +248,6 @@ void check_unique() {
   assert(crc64(0ULL, buf1, STRLEN) != crc64(0ULL, buf2, STRLEN));
 }
 
-#define HASH 17625494597720145299
 void check_decode() {
   char buf[STRLEN+1];
   buf[STRLEN] = 0;
@@ -254,4 +256,21 @@ void check_decode() {
   //TODO: сообщение должно быть помещено в буфер buf для проверки
   //TODO: чтобы проверить правильность своих ограничений, попробуйте написать отдельный код, в котором захэшировать своё сообщение, и выполните его как обычную C программу
   //TODO: затем попробуйте обратить полученный хэш при помощи своих ограничений и CBMC
+  __CPROVER_assume(is_valid(buf, STRLEN));
+  assert(crc64(0ULL, buf, STRLEN) != HASH);
 }
+
+#else
+int main(void) {
+  const unsigned char buf[] = {
+    'm', 'm', 'c', 'd', 'd', 'b', 'o', ' ', 'i', 'p', 'f', 's', 'f', 'f', 0
+  };
+  const unsigned long long hash = crc64(0ULL, buf, sizeof buf - 1);
+  const bool matches = hash == HASH;
+
+  printf("crc64: %llu\n", hash);
+  printf("HASH:  %llu\n", HASH);
+  puts(matches ? "Match" : "Mismatch");
+  return matches ? 0 : 1;
+}
+#endif

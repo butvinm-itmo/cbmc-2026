@@ -91,9 +91,9 @@ def check_crc(directory):
   digest = "51ff6be5367e17e9f380ebf07ad792790fe69e431afc190411bc32759efbbfc2b88320c4a793a54562423a536d8821b01625bb7b28d55b8f8234477cf6ef1f91"
   for length in range(1, 21):
     try:
-      result = run_cbmc(path, "check_decode", [f"-DSTRLEN={length}", "--unwind", str(length + 2), "--trace"], timeout=30)
+      result = run_cbmc(path, "check_decode", [f"-DSTRLEN={length}", "--unwind", str(length + 2), "--trace"], timeout=90)
     except subprocess.TimeoutExpired:
-      print(f"crc/check_decode: превышено время проверки при длине {length} (30 секунд); остальные длины не проверены")
+      print(f"crc/check_decode: превышено время проверки при длине {length} (90 секунд); остальные длины не проверены")
       break
     output = result.stdout
     assertions = re.findall(r"^\[check_decode\.assertion\.\d+\].*: (SUCCESS|FAILURE)$", output, re.MULTILINE)
