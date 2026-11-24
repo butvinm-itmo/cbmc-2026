@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -210,6 +212,25 @@ unsigned long long fio_crc64(const unsigned char *buffer, unsigned long length)
 	return crc;
 }
 
+
+bool is_valid(char *buf, size_t n) {
+   	for (size_t i = 0; i < n; i++) {
+        if (!((buf[i] >= 'a' && buf[i] <= 'z') || (buf[i] == ' '))) {
+            return false;
+        }
+    }	
+    return true;
+}
+
+bool is_equal(char *buf1, char *buf2, size_t n) {
+   	for (size_t i = 0; i < n; i++) {
+        if (buf1[i] != buf2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void check_unique() {
   char buf1[STRLEN+1];
   buf1[STRLEN] = 0;
@@ -218,6 +239,10 @@ void check_unique() {
   //TODO: здесь нужно написать свои ограничения, которые гарантируют следующее:
   //TODO: если в буферах buf1 и buf2 разные строки и каждый их символ либо пробел, либо буква от `a` (латинская) до `z`
   //TODO: то crc64 хэши этих буферов различны
+  __CPROVER_assume(is_valid(buf1, STRLEN));
+  __CPROVER_assume(is_valid(buf2, STRLEN));
+  __CPROVER_assume(!is_equal(buf1, buf2, STRLEN));
+  assert(crc64(0ULL, buf1, STRLEN) != crc64(0ULL, buf2, STRLEN));
 }
 
 #define HASH 17625494597720145299
